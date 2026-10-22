@@ -1,31 +1,21 @@
+import ReadButton from "@/components/bookDetails/ReadButton";
+import WishButton from "@/components/bookDetails/WishButton";
 import { IBook } from "@/types/book.type";
 import Image from "next/image";
 import React from "react";
+import booksData from "../../../../public/booksData.json";
 interface IBookDetailPageProps {
   params: Promise<{
     Id: string;
   }>;
 }
 
-const getBooks = async () => {
-  const res = await fetch("http://localhost:3000/booksData.json", {
-    next: { revalidate: 10 },
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch books data");
-  }
-
-  return res.json();
-};
-
 const BookDetailPage = async ({ params }: IBookDetailPageProps) => {
   const { Id } = await params;
-  const booksData = await getBooks();
   const Book = booksData.find(
     (book: IBook) => String(book.bookId) === String(Id),
   ) as IBook;
-  console.log(Book);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="card card-side flex-col overflow-hidden border border-base-300 bg-base-100 shadow-xl transition-shadow duration-300 hover:shadow-2xl md:flex-row">
@@ -115,11 +105,8 @@ const BookDetailPage = async ({ params }: IBookDetailPageProps) => {
 
           {/* Actions */}
           <div className="card-actions mt-2 flex-wrap justify-start">
-            <button className="btn btn-primary">Read Book Details</button>
-
-            <button className="btn btn-outline btn-primary">
-              Add to Wishlist ♡
-            </button>
+            <ReadButton book={Book}></ReadButton>
+            <WishButton book={Book}></WishButton>
           </div>
         </div>
       </div>
